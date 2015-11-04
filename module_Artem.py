@@ -5,7 +5,7 @@ and produces the PNG image out of it
 import numpy as np
 import matplotlib.image as matim
 
-def matrix_compress_export(U, V, s_list, M, filename):
+def matrix_compress_export(UR, sR, VR, UG, sG, VG, UB, sB, VB, M, filename):
     """Here we compress the matrices U,s,V from the SVD decomposition
     by leaving only the M largest eigenvalues in the diagonal matrix s
     
@@ -20,16 +20,27 @@ def matrix_compress_export(U, V, s_list, M, filename):
     filename - the name of the output PNG file 
     -------------------------
     """
-    if U.shape != V.shape or U.shape[0] != U.shape[1] or U.shape[0] != s_list.shape[0]:
-        raise ValueError("The size of the input matrices is incorrect!")
-    if M > s_list.shape[0] or M < 1:
-        raise ValueError("The number of remaining eigenvalues is incorrect!")
+#    if U.shape != V.shape or U.shape[0] != U.shape[1] or U.shape[0] != s_list.shape[0]:
+#        raise ValueError("The size of the input matrices is incorrect!")
+#    if M > s_list.shape[0] or M < 1:
+#        raise ValueError("The number of remaining eigenvalues is incorrect!")
     
-    matrix_size = U.shape[0]
+#    matrix_size = U.shape[0]
     
-    U_resize = U[:,:M] #np.resize(U,(matrix_size,M))
-    s_resize = s_list[:M,:M] #np.resize(s_list,(M,))  
-    V_resize = V[:M,:]#np.resize(V,(M,matrix_size))
+    U_resizeR = UR[:,:M]
+    s_resizeR = sR[:M] 
+    V_resizeR = VR[:M,:]
     
-    matrix_compressed = U_resize.dot(np.diag(s_resize)).dot(V_resize)
+    U_resizeG = UG[:,:M]
+    s_resizeG = sG[:M] 
+    V_resizeG = VG[:M,:]
+    
+    U_resizeB = UB[:,:M]
+    s_resizeB = sB[:M] 
+    V_resizeB = VB[:M,:]
+    
+    matrix_compressed = np.zeros((U_resizeR.shape[0],V_resizeR.shape[1],3))
+    matrix_compressed[:,:,0] = U_resizeR.dot(np.diag(s_resizeR)).dot(V_resizeR)
+    matrix_compressed[:,:,1] = U_resizeG.dot(np.diag(s_resizeG)).dot(V_resizeG)
+    matrix_compressed[:,:,2] = U_resizeB.dot(np.diag(s_resizeB)).dot(V_resizeB)
     matim.imsave(filename, matrix_compressed)
