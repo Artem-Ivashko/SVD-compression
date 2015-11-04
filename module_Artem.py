@@ -27,9 +27,9 @@ def matrix_compress_export(U, V, s_list, M, filename):
     
     matrix_size = U.shape[0]
     
-    U_resize = np.resize(U,(matrix_size,M))
-    s_resize = np.resize(s_list,(M,))  
-    V_resize = np.resize(V,(M,matrix_size))
+    U_resize = U[:,:M] #np.resize(U,(matrix_size,M))
+    s_resize = s_list[:M,:M] #np.resize(s_list,(M,))  
+    V_resize = V[:M,:]#np.resize(V,(M,matrix_size))
     
     matrix_compressed = U_resize.dot(np.diag(s_resize)).dot(V_resize)
     matim.imsave(filename, matrix_compressed)
