@@ -1,10 +1,11 @@
-"""This module contains two functions: matrix_compress for the compression of the given SVD-decomposed matrix
-and the export_image function that produces the PNG image for given matrix
+"""This module compresses the given SVD-decomposed matrix
+and produces the PNG image out of it
 """
 
 import numpy as np
+import matplotlib.image as matim
 
-def matrix_compress(U, V, s_list, M):
+def matrix_compress_export(U, V, s_list, M, filename):
     """Here we compress the matrices U,s,V from the SVD decomposition
     by leaving only the M largest eigenvalues in the diagonal matrix s
     
@@ -15,10 +16,9 @@ def matrix_compress(U, V, s_list, M):
     s_list is the list of diagonal elements of the matrix S,
     sorted in descending order;
     M - positive integer number. It is the number of the largest eigenvalues in the matrix A, 
-    which remain after the compression 
+    which remain after the compression
+    filename - the name of the output PNG file 
     -------------------------
-    Output:
-    The compressed N x N matrix
     """
     if U.shape != V.shape or U.shape[0] != U.shape[1] or U.shape[0] != s_list.shape[0]:
         raise ValueError("The size of the input matrices is incorrect!")
@@ -30,5 +30,6 @@ def matrix_compress(U, V, s_list, M):
     U_resize = np.resize(U,(matrix_size,M))
     s_resize = np.resize(s_list,(M,))  
     V_resize = np.resize(V,(M,matrix_size))
-      
-    return U_resize.dot(np.diag(s_resize)).dot(V_resize)
+    
+    matrix_compressed = U_resize.dot(np.diag(s_resize)).dot(V_resize)
+    matim.imsave(filename, matrix_compressed)
